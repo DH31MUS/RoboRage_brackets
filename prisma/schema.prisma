@@ -1,0 +1,27 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // Tu URL de Postgres
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Tournament {
+  id        Int      @id @default(autoincrement())
+  name      String   // ej: "Torneo de Verano 2026"
+  matches   Match[]
+}
+
+model Match {
+  id           Int        @id @default(autoincrement())
+  tournamentId Int
+  round        Int        // 1: Cuartos, 2: Semis, 3: Final
+  matchOrder   Int        // Orden dentro de la ronda
+  player1      String?    // Puede ser null si aún no se decide
+  player2      String?
+  winner       String?
+  nextMatchId  Int?       // ID de la partida a la que avanza el ganador
+  
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+}
